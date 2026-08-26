@@ -1,0 +1,3574 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#02060c">
+
+<title>ROMAN // Centro Sísmico Bogotá</title>
+
+<style>
+
+/* =====================================================
+   ROMAN HUD
+===================================================== */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+
+    --bg:#02060c;
+    --panel:#07101b;
+    --panel2:#0a1624;
+    --panel3:#0d1d2d;
+
+    --line:#18324b;
+    --line2:#214562;
+
+    --text:#edf7ff;
+    --muted:#6f8ca5;
+
+    --cyan:#00e5ff;
+    --blue:#168cff;
+
+    --green:#00f58a;
+    --yellow:#ffd21c;
+    --red:#ff3151;
+    --orange:#ff7838;
+
+}
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+}
+
+body{
+
+    font-family:
+        Inter,
+        Segoe UI,
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 70% 20%,
+            rgba(0,229,255,.08),
+            transparent 35%
+        ),
+        #02060c;
+
+    color:var(--text);
+
+    overflow:hidden;
+
+}
+
+
+/* =====================================================
+   SCANLINES
+===================================================== */
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:9999;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.015) 0px,
+            rgba(255,255,255,.015) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    height:70px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #030912,
+            #071521,
+            #030912
+        );
+
+    border-bottom:
+        1px solid var(--line2);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 22px;
+
+    position:relative;
+
+    z-index:30;
+
+    box-shadow:
+        0 5px 25px rgba(0,0,0,.45);
+
+}
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+}
+
+
+.brandIcon{
+
+    width:44px;
+
+    height:44px;
+
+    display:grid;
+
+    place-items:center;
+
+    border:
+        1px solid rgba(0,229,255,.5);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,229,255,.18),
+            rgba(0,229,255,.03)
+        );
+
+    color:var(--cyan);
+
+    border-radius:10px;
+
+    font-size:22px;
+
+    box-shadow:
+        0 0 18px rgba(0,229,255,.15);
+
+}
+
+
+.brand h1{
+
+    font-size:17px;
+
+    letter-spacing:.12em;
+
+    font-weight:800;
+
+}
+
+
+.brand p{
+
+    font-size:9px;
+
+    letter-spacing:.18em;
+
+    color:var(--cyan);
+
+    margin-top:4px;
+
+}
+
+
+.headerRight{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+
+.systemStatus{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:10px;
+
+    letter-spacing:.12em;
+
+    color:var(--green);
+
+}
+
+
+.statusDot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 12px var(--green);
+
+    animation:
+        statusBlink 1.5s infinite;
+
+}
+
+
+@keyframes statusBlink{
+
+    50%{
+        opacity:.35;
+    }
+
+}
+
+
+.soundButton{
+
+    width:40px;
+
+    height:40px;
+
+    border:
+        1px solid var(--line2);
+
+    background:
+        #091725;
+
+    color:white;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+}
+
+
+.soundButton:hover{
+
+    border-color:var(--cyan);
+
+    box-shadow:
+        0 0 15px rgba(0,229,255,.15);
+
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.app{
+
+    height:
+        calc(100vh - 70px);
+
+    display:grid;
+
+    grid-template-columns:
+        390px 1fr;
+
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar{
+
+    background:
+        linear-gradient(
+            180deg,
+            #050d16,
+            #07111c
+        );
+
+    border-right:
+        1px solid var(--line2);
+
+    overflow-y:auto;
+
+    padding:15px;
+
+    scrollbar-width:thin;
+
+    scrollbar-color:
+        var(--line2)
+        transparent;
+
+}
+
+
+.sidebar::-webkit-scrollbar{
+
+    width:5px;
+
+}
+
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:var(--line2);
+
+}
+
+
+/* =====================================================
+   HUD SECTION
+===================================================== */
+
+.section{
+
+    margin-bottom:17px;
+
+}
+
+
+.sectionTitle{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.18em;
+
+    color:var(--cyan);
+
+    margin-bottom:8px;
+
+}
+
+
+.sectionTitle::before{
+
+    content:"";
+
+    width:5px;
+
+    height:5px;
+
+    background:var(--cyan);
+
+    box-shadow:
+        0 0 8px var(--cyan);
+
+}
+
+
+/* =====================================================
+   MAIN ALERT
+===================================================== */
+
+.mainAlert{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:
+        1px solid #17415b;
+
+    border-left:
+        4px solid var(--green);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,245,138,.07),
+            rgba(7,24,38,.95)
+        );
+
+    border-radius:8px;
+
+    padding:16px;
+
+    margin-bottom:17px;
+
+}
+
+
+.mainAlert::after{
+
+    content:"SYSTEM MONITOR";
+
+    position:absolute;
+
+    right:10px;
+
+    top:8px;
+
+    font-size:7px;
+
+    letter-spacing:.16em;
+
+    color:#3b6680;
+
+}
+
+
+.mainAlert.warning{
+
+    border-left-color:
+        var(--yellow);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,210,28,.08),
+            rgba(7,24,38,.95)
+        );
+
+}
+
+
+.mainAlert.danger{
+
+    border-left-color:
+        var(--red);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,49,81,.12),
+            rgba(7,20,31,.95)
+        );
+
+    animation:
+        dangerPulse 1s infinite alternate;
+
+}
+
+
+@keyframes dangerPulse{
+
+    from{
+        box-shadow:
+            0 0 0 rgba(255,49,81,0);
+    }
+
+    to{
+        box-shadow:
+            0 0 25px rgba(255,49,81,.25);
+    }
+
+}
+
+
+.alertTop{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:9px;
+
+}
+
+
+.alertIcon{
+
+    width:40px;
+
+    height:40px;
+
+    border:
+        1px solid #23516a;
+
+    border-radius:8px;
+
+    display:grid;
+
+    place-items:center;
+
+    background:
+        rgba(0,229,255,.06);
+
+    font-size:19px;
+
+}
+
+
+.mainAlert h2{
+
+    font-size:15px;
+
+    letter-spacing:.04em;
+
+}
+
+
+.mainAlert p{
+
+    font-size:11px;
+
+    line-height:1.55;
+
+    color:#88a5bc;
+
+}
+
+
+/* =====================================================
+   RISK GRID
+===================================================== */
+
+.riskGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:7px;
+
+}
+
+
+.riskButton{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:
+        1px solid var(--line);
+
+    background:
+        linear-gradient(
+            145deg,
+            #0a1827,
+            #07111d
+        );
+
+    color:white;
+
+    border-radius:7px;
+
+    padding:11px 10px;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    transition:.2s;
+
+}
+
+
+.riskButton:hover{
+
+    border-color:
+        var(--cyan);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.riskButton.active{
+
+    border-color:
+        var(--cyan);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,229,255,.12),
+            rgba(0,70,100,.12)
+        );
+
+    box-shadow:
+        inset 0 0 20px
+        rgba(0,229,255,.04);
+
+}
+
+
+.riskEmoji{
+
+    font-size:18px;
+
+    display:block;
+
+    margin-bottom:4px;
+
+}
+
+
+.riskName{
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:.04em;
+
+}
+
+
+.riskDescription{
+
+    font-size:9px;
+
+    color:var(--muted);
+
+    margin-top:3px;
+
+}
+
+
+/* =====================================================
+   DATA BOX
+===================================================== */
+
+.dataBox{
+
+    background:
+        #07121e;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:7px;
+
+    overflow:hidden;
+
+}
+
+
+.dataRow{
+
+    min-height:35px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:8px 11px;
+
+    border-bottom:
+        1px solid #10283c;
+
+    font-size:10px;
+
+}
+
+
+.dataRow:last-child{
+
+    border-bottom:none;
+
+}
+
+
+.dataLabel{
+
+    color:#67849b;
+
+    text-transform:uppercase;
+
+    letter-spacing:.06em;
+
+}
+
+
+.dataValue{
+
+    font-weight:700;
+
+    color:#dff5ff;
+
+    text-align:right;
+
+}
+
+
+/* =====================================================
+   LOCATION BUTTON
+===================================================== */
+
+.locationButton{
+
+    width:100%;
+
+    border:
+        1px solid #176d91;
+
+    background:
+        linear-gradient(
+            90deg,
+            #07506d,
+            #08708d
+        );
+
+    color:white;
+
+    padding:10px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    font-size:11px;
+
+    margin-top:8px;
+
+}
+
+
+.locationButton:hover{
+
+    background:
+        #0785a7;
+
+    box-shadow:
+        0 0 18px rgba(0,229,255,.18);
+
+}
+
+
+/* =====================================================
+   EVENTS
+===================================================== */
+
+.events{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+}
+
+
+.event{
+
+    position:relative;
+
+    padding:10px;
+
+    background:
+        #07121e;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.event:hover{
+
+    border-color:
+        #287293;
+
+    background:
+        #0a1826;
+
+}
+
+
+.eventHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+}
+
+
+.eventMagnitude{
+
+    font-size:15px;
+
+    font-weight:900;
+
+}
+
+
+.eventPlace{
+
+    color:#b4c9d8;
+
+    font-size:10px;
+
+    margin-top:4px;
+
+    line-height:1.4;
+
+}
+
+
+.eventTime{
+
+    color:#58758b;
+
+    font-size:9px;
+
+    margin-top:5px;
+
+}
+
+
+/* =====================================================
+   SIMULADOR
+===================================================== */
+
+.simulation{
+
+    border:
+        1px dashed #24506b;
+
+    background:
+        rgba(0,229,255,.025);
+
+    padding:11px;
+
+    border-radius:7px;
+
+}
+
+
+.simulation button{
+
+    width:100%;
+
+    margin-top:7px;
+
+    border:
+        1px solid #203e56;
+
+    background:
+        #0b1b2b;
+
+    color:white;
+
+    padding:9px;
+
+    border-radius:5px;
+
+    cursor:pointer;
+
+    font-size:10px;
+
+}
+
+
+.simulation button:hover{
+
+    border-color:
+        var(--cyan);
+
+    background:
+        #10283b;
+
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+.mapContainer{
+
+    position:relative;
+
+    width:100%;
+
+    height:100%;
+
+    background:#02060c;
+
+}
+
+
+#map{
+
+    width:100%;
+
+    height:100%;
+
+}
+
+
+/* =====================================================
+   MAP CORNERS
+===================================================== */
+
+.mapContainer::before{
+
+    content:"ROMAN // LIVE EARTHQUAKE MONITOR";
+
+    position:absolute;
+
+    top:12px;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    z-index:4;
+
+    padding:6px 13px;
+
+    background:
+        rgba(3,10,17,.85);
+
+    border:
+        1px solid #1b4b64;
+
+    color:#64cde0;
+
+    font-size:9px;
+
+    letter-spacing:.16em;
+
+    pointer-events:none;
+
+}
+
+
+/* =====================================================
+   MAP CONTROLS
+===================================================== */
+
+.mapControls{
+
+    position:absolute;
+
+    top:55px;
+
+    right:16px;
+
+    z-index:5;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+}
+
+
+.mapButton{
+
+    border:
+        1px solid #28516a;
+
+    background:
+        rgba(4,15,25,.94);
+
+    color:white;
+
+    border-radius:6px;
+
+    padding:9px 12px;
+
+    cursor:pointer;
+
+    font-size:10px;
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.mapButton:hover{
+
+    border-color:
+        var(--cyan);
+
+    color:var(--cyan);
+
+}
+
+
+/* =====================================================
+   MAP ALERT
+===================================================== */
+
+.mapAlert{
+
+    position:absolute;
+
+    top:55px;
+
+    left:16px;
+
+    width:300px;
+
+    background:
+        rgba(3,13,22,.95);
+
+    border:
+        1px solid #21465d;
+
+    border-left:
+        4px solid var(--green);
+
+    border-radius:7px;
+
+    padding:13px;
+
+    z-index:5;
+
+    backdrop-filter:
+        blur(14px);
+
+    display:none;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.4);
+
+}
+
+
+.mapAlert.show{
+
+    display:block;
+
+}
+
+
+.mapAlert h3{
+
+    font-size:12px;
+
+    letter-spacing:.06em;
+
+    margin-bottom:5px;
+
+}
+
+
+.mapAlert p{
+
+    color:#8ca8ba;
+
+    font-size:10px;
+
+    line-height:1.5;
+
+}
+
+
+/* =====================================================
+   LEGEND
+===================================================== */
+
+.legend{
+
+    position:absolute;
+
+    bottom:17px;
+
+    right:17px;
+
+    background:
+        rgba(3,13,22,.94);
+
+    border:
+        1px solid #21465d;
+
+    border-radius:7px;
+
+    padding:11px;
+
+    z-index:5;
+
+    font-size:9px;
+
+    backdrop-filter:
+        blur(12px);
+
+}
+
+
+.legendTitle{
+
+    color:#ccecf5;
+
+    font-weight:800;
+
+    letter-spacing:.1em;
+
+    margin-bottom:7px;
+
+}
+
+
+.legendRow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-top:5px;
+
+    color:#7995a8;
+
+}
+
+
+.legendCircle{
+
+    width:9px;
+
+    height:9px;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 8px currentColor;
+
+}
+
+
+.green{
+
+    background:var(--green);
+    color:var(--green);
+
+}
+
+
+.yellow{
+
+    background:var(--yellow);
+    color:var(--yellow);
+
+}
+
+
+.red{
+
+    background:var(--red);
+    color:var(--red);
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:850px){
+
+    body{
+        overflow:auto;
+    }
+
+    header{
+        height:62px;
+        padding:0 12px;
+    }
+
+    .brand h1{
+        font-size:13px;
+    }
+
+    .brand p{
+        font-size:7px;
+    }
+
+    .brandIcon{
+        width:37px;
+        height:37px;
+        font-size:18px;
+    }
+
+    .systemStatus{
+        display:none;
+    }
+
+    .app{
+
+        height:auto;
+
+        display:flex;
+
+        flex-direction:column;
+
+    }
+
+    .mapContainer{
+
+        height:58vh;
+
+        order:1;
+
+    }
+
+    .sidebar{
+
+        order:2;
+
+        border-right:none;
+
+        border-top:
+            1px solid var(--line2);
+
+        padding-bottom:95px;
+
+    }
+
+    /* OPCIONES DE AMENAZAS EN LA PARTE INFERIOR */
+    .sidebar .section:first-of-type{
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        z-index:50;
+        margin:0;
+        padding:8px 10px 10px;
+        background:rgba(3,10,17,.97);
+        border-top:1px solid var(--line2);
+        box-shadow:0 -8px 25px rgba(0,0,0,.55);
+        backdrop-filter:blur(12px);
+    }
+
+    .sidebar .section:first-of-type .sectionTitle{
+        display:none;
+    }
+
+    .riskGrid{
+        display:grid;
+        grid-template-columns:repeat(6, 1fr);
+        gap:6px;
+    }
+
+    .riskButton{
+        min-height:62px;
+        padding:7px 4px;
+        text-align:center;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .riskEmoji{
+        font-size:20px;
+        margin-bottom:2px;
+    }
+
+    .riskName{
+        font-size:9px;
+    }
+
+    .riskDescription{
+        display:none;
+    }
+
+    .mapAlert{
+
+        width:
+            calc(100% - 32px);
+
+    }
+
+    .mapContainer::before{
+
+        font-size:7px;
+
+    }
+
+    .legend{
+
+        bottom:8px;
+
+        right:8px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <div class="brand">
+
+        <div class="brandIcon">
+            🌐
+        </div>
+
+        <div>
+
+            <h1>
+                ROMAN // CENTRO SÍSMICO
+            </h1>
+
+            <p>
+                BOGOTÁ D.C. // SISTEMA DE MONITOREO
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="headerRight">
+
+        <div class="systemStatus">
+
+            <span class="statusDot"></span>
+
+            SISTEMA ACTIVO
+
+        </div>
+
+
+        <button
+            id="soundButton"
+            class="soundButton"
+            onclick="toggleSound()"
+            title="Activar/desactivar sonido">
+
+            🔊
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="app">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+
+    <div
+        id="mainAlert"
+        class="mainAlert">
+
+
+        <div class="alertTop">
+
+            <div
+                id="alertIcon"
+                class="alertIcon">
+
+                🟢
+
+            </div>
+
+
+            <div>
+
+                <h2 id="alertTitle">
+                    Sistema normal
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <p id="alertMessage">
+
+            No hay alertas sísmicas
+            significativas cerca de Bogotá.
+
+        </p>
+
+    </div>
+
+
+    <!-- RIESGOS -->
+
+    <div class="section">
+
+        <div class="sectionTitle">
+            Amenazas monitoreadas
+        </div>
+
+
+        <div class="riskGrid">
+
+
+            <button
+                class="riskButton active"
+                data-risk="sismos"
+                onclick="selectRisk('sismos')">
+
+                <span class="riskEmoji">
+                    🫨
+                </span>
+
+                <span class="riskName">
+                    Sismos
+                </span>
+
+                <div class="riskDescription">
+                    Actividad sísmica
+                </div>
+
+            </button>
+
+
+            <button
+                class="riskButton"
+                data-risk="inundaciones"
+                onclick="selectRisk('inundaciones')">
+
+                <span class="riskEmoji">
+                    💧
+                </span>
+
+                <span class="riskName">
+                    Inundaciones
+                </span>
+
+                <div class="riskDescription">
+                    Lluvias
+                </div>
+
+            </button>
+
+
+            <button
+                class="riskButton"
+                data-risk="deslizamientos"
+                onclick="selectRisk('deslizamientos')">
+
+                <span class="riskEmoji">
+                    🪨
+                </span>
+
+                <span class="riskName">
+                    Deslizamientos
+                </span>
+
+                <div class="riskDescription">
+                    Movimiento terreno
+                </div>
+
+            </button>
+
+
+            <button
+                class="riskButton"
+                data-risk="incendios"
+                onclick="selectRisk('incendios')">
+
+                <span class="riskEmoji">
+                    🧯
+                </span>
+
+                <span class="riskName">
+                    Incendios
+                </span>
+
+                <div class="riskDescription">
+                    Incendios forestales
+                </div>
+
+            </button>
+
+
+            <button
+                class="riskButton"
+                data-risk="volcanes"
+                onclick="selectRisk('volcanes')">
+
+                <span class="riskEmoji">
+                    🌋
+                </span>
+
+                <span class="riskName">
+                    Volcanes
+                </span>
+
+                <div class="riskDescription">
+                    Actividad volcánica
+                </div>
+
+            </button>
+
+
+            <button
+                class="riskButton"
+                data-risk="todos"
+                onclick="selectRisk('todos')">
+
+                <span class="riskEmoji">
+                    ⚡
+                </span>
+
+                <span class="riskName">
+                    Todos
+                </span>
+
+                <div class="riskDescription">
+                    Todas las amenazas
+                </div>
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- UBICACIÓN -->
+
+    <div class="section">
+
+        <div class="sectionTitle">
+            Geolocalización
+        </div>
+
+
+        <div class="dataBox">
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Latitud
+                </span>
+
+                <span
+                    id="userLat"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Longitud
+                </span>
+
+                <span
+                    id="userLng"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Precisión
+                </span>
+
+                <span
+                    id="userAccuracy"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="locationButton"
+            onclick="getUserLocation()">
+
+            📍 LOCALIZAR MI POSICIÓN
+
+        </button>
+
+    </div>
+
+
+    <!-- DATOS -->
+
+    <div class="section">
+
+        <div class="sectionTitle">
+            Telemetría sísmica
+        </div>
+
+
+        <div class="dataBox">
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Tipo
+                </span>
+
+                <span
+                    id="dataType"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Nivel
+                </span>
+
+                <span
+                    id="dataLevel"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Magnitud
+                </span>
+
+                <span
+                    id="dataMagnitude"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Latitud
+                </span>
+
+                <span
+                    id="dataLat"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Longitud
+                </span>
+
+                <span
+                    id="dataLng"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="dataRow">
+
+                <span class="dataLabel">
+                    Profundidad
+                </span>
+
+                <span
+                    id="dataDepth"
+                    class="dataValue">
+                    --
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EVENTOS -->
+
+    <div class="section">
+
+        <div class="sectionTitle">
+            Eventos recientes
+        </div>
+
+
+        <div
+            id="events"
+            class="events">
+
+            <div class="event">
+                📡 Cargando eventos...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIMULADOR -->
+
+    <div class="section">
+
+        <div class="sectionTitle">
+            Simulación de emergencia
+        </div>
+
+
+        <div class="simulation">
+
+            <div style="
+                font-size:10px;
+                line-height:1.5;
+                color:#7895a9;
+            ">
+
+                MODO DE PRUEBA ROMAN.
+                No genera una alerta real.
+
+            </div>
+
+
+            <button
+                onclick="simulateAlert('yellow')">
+
+                🟡 ALERTA PREVENTIVA
+
+            </button>
+
+
+            <button
+                onclick="simulateAlert('red')">
+
+                🔴 EMERGENCIA SÍSMICA
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+</aside>
+
+
+<!-- =====================================================
+     MAPA
+===================================================== -->
+
+<main class="mapContainer">
+
+
+    <div id="map"></div>
+
+
+    <div
+        id="mapAlert"
+        class="mapAlert">
+
+        <h3 id="mapAlertTitle">
+            Alerta
+        </h3>
+
+        <p id="mapAlertText">
+            --
+        </p>
+
+    </div>
+
+
+    <div class="mapControls">
+
+
+        <button
+            class="mapButton"
+            onclick="centerBogota()">
+
+            🏙️ BOGOTÁ
+
+        </button>
+
+
+        <button
+            class="mapButton"
+            onclick="getUserLocation()">
+
+            📍 MI POSICIÓN
+
+        </button>
+
+
+        <button
+            class="mapButton"
+            onclick="clearAlerts()">
+
+            🧹 LIMPIAR
+
+        </button>
+
+
+    </div>
+
+
+    <div class="legend">
+
+        <div class="legendTitle">
+            NIVEL DE RIESGO
+        </div>
+
+
+        <div class="legendRow">
+
+            <span class="legendCircle green"></span>
+
+            BAJO
+
+        </div>
+
+
+        <div class="legendRow">
+
+            <span class="legendCircle yellow"></span>
+
+            MODERADO
+
+        </div>
+
+
+        <div class="legendRow">
+
+            <span class="legendCircle red"></span>
+
+            ALTO / EMERGENCIA
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONFIGURACIÓN
+===================================================== */
+
+const GOOGLE_MAPS_KEY =
+    "AIzaSyANlwwU91oZR6p4N_wOhaHm4J1Kn69qTKw";
+
+
+const BOGOTA = {
+
+    lat:4.7110,
+
+    lng:-74.0721
+
+};
+
+
+let map;
+
+let userMarker=null;
+
+let userCircle=null;
+
+let alertMarker=null;
+
+let alertCircle=null;
+
+let earthquakeMarkers=[];
+
+let selectedRisk="sismos";
+
+let soundEnabled=true;
+
+let lastEarthquakeIds=new Set();
+
+
+/* =====================================================
+   MAPA
+===================================================== */
+
+async function initMap(){
+
+    const {Map} =
+        await google.maps.importLibrary("maps");
+
+    const {AdvancedMarkerElement} =
+        await google.maps.importLibrary("marker");
+
+
+    map=new Map(
+
+        document.getElementById("map"),
+
+        {
+
+            center:BOGOTA,
+
+            zoom:10,
+
+            mapId:"DEMO_MAP_ID",
+
+            mapTypeId:"roadmap",
+
+            streetViewControl:false,
+
+            fullscreenControl:true,
+
+            mapTypeControl:true
+
+        }
+
+    );
+
+
+    window.AdvancedMarkerElement =
+        AdvancedMarkerElement;
+
+
+    centerBogota();
+
+    loadEarthquakes();
+
+
+    setInterval(
+        loadEarthquakes,
+        60000
+    );
+
+}
+
+
+/* =====================================================
+   BOGOTÁ
+===================================================== */
+
+function centerBogota(){
+
+    if(!map)return;
+
+    map.setCenter(BOGOTA);
+
+    map.setZoom(10);
+
+}
+
+
+/* =====================================================
+   RIESGOS
+===================================================== */
+
+function selectRisk(risk){
+
+    selectedRisk=risk;
+
+
+    document
+        .querySelectorAll(".riskButton")
+        .forEach(button=>{
+
+            button.classList.remove("active");
+
+        });
+
+
+    const active=
+        document.querySelector(
+            `[data-risk="${risk}"]`
+        );
+
+
+    if(active){
+
+        active.classList.add("active");
+
+    }
+
+
+    clearAlerts();
+
+
+    if(risk==="sismos"){
+
+        loadEarthquakes();
+
+    }
+
+
+    if(
+
+        risk==="inundaciones" ||
+
+        risk==="deslizamientos" ||
+
+        risk==="incendios" ||
+
+        risk==="volcanes"
+
+    ){
+
+        showUnavailableRisk(risk);
+
+    }
+
+
+    if(risk==="todos"){
+
+        loadEarthquakes();
+
+        showUnavailableRisk("otros");
+
+    }
+
+}
+
+
+/* =====================================================
+   RIESGOS NO DISPONIBLES
+===================================================== */
+
+function showUnavailableRisk(risk){
+
+    const names={
+
+        inundaciones:"Inundaciones",
+
+        deslizamientos:"Deslizamientos",
+
+        incendios:"Incendios",
+
+        volcanes:"Actividad volcánica",
+
+        otros:"Otros riesgos"
+
+    };
+
+
+    document.getElementById(
+        "alertTitle"
+    ).textContent=
+        "🟢 Monitoreo seleccionado";
+
+
+    document.getElementById(
+        "alertMessage"
+    ).textContent=
+        `${names[risk]} seleccionado. `+
+        `Esta interfaz está preparada para `+
+        `conectar una fuente oficial de datos `+
+        `para este tipo de riesgo.`;
+
+}
+
+
+/* =====================================================
+   CARGAR SISMOS
+===================================================== */
+
+async function loadEarthquakes(){
+
+    if(
+
+        selectedRisk!=="sismos" &&
+        selectedRisk!=="todos"
+
+    ){
+
+        return;
+
+    }
+
+
+    try{
+
+        const response=
+            await fetch(
+
+                "https://earthquake.usgs.gov/"+
+                "earthquakes/feed/v1.0/"+
+                "summary/all_day.geojson"
+
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Error obteniendo sismos"
+            );
+
+        }
+
+
+        const data=
+            await response.json();
+
+
+        processEarthquakes(
+            data.features
+        );
+
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+
+        document.getElementById(
+            "events"
+        ).innerHTML=`
+
+            <div class="event">
+
+                ❌ No se pudieron cargar
+                los sismos.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   PROCESAR
+===================================================== */
+
+function processEarthquakes(
+    earthquakes
+){
+
+    clearEarthquakeMarkers();
+
+
+    const sorted=
+        earthquakes
+
+        .filter(
+            earthquake =>
+                earthquake.properties.mag
+                !==null
+        )
+
+        .sort(
+            (a,b)=>
+                b.properties.mag-
+                a.properties.mag
+        );
+
+
+    const events=
+        document.getElementById(
+            "events"
+        );
+
+
+    events.innerHTML="";
+
+
+    sorted
+        .slice(0,12)
+        .forEach(earthquake=>{
+
+            createEarthquakeMarker(
+                earthquake
+            );
+
+            createEventCard(
+                earthquake
+            );
+
+        });
+
+
+    evaluateEarthquakeAlert(
+        sorted
+    );
+
+}
+
+
+/* =====================================================
+   MARCADORES
+===================================================== */
+
+function createEarthquakeMarker(
+    earthquake
+){
+
+    const coords=
+        earthquake.geometry.coordinates;
+
+
+    const lng=coords[0];
+
+    const lat=coords[1];
+
+    const depth=coords[2];
+
+    const magnitude=
+        earthquake.properties.mag;
+
+
+    const color=
+        getMagnitudeColor(
+            magnitude
+        );
+
+
+    const pin=
+        document.createElement("div");
+
+
+    pin.style.width=
+        Math.max(
+            14,
+            Math.min(
+                36,
+                magnitude*7
+            )
+        )+"px";
+
+
+    pin.style.height=
+        pin.style.width;
+
+
+    pin.style.borderRadius="50%";
+
+    pin.style.background=color;
+
+    pin.style.border="3px solid white";
+
+    pin.style.boxShadow=
+        `0 0 18px ${color}`;
+
+    pin.style.cursor="pointer";
+
+
+    const marker=
+        new AdvancedMarkerElement({
+
+            map:map,
+
+            position:{
+                lat:lat,
+                lng:lng
+            },
+
+            content:pin,
+
+            title:
+                `Sismo M${magnitude}`
+
+        });
+
+
+    marker.addListener(
+        "click",
+        ()=>{
+
+            map.panTo({
+                lat,
+                lng
+            });
+
+            map.setZoom(13);
+
+
+            showMapAlert(
+                "🌎 SISMO DETECTADO",
+                `
+                Magnitud: ${magnitude}<br>
+                Profundidad: ${depth.toFixed(1)} km<br>
+                ${earthquake.properties.place}
+                `
+            );
+
+        }
+    );
+
+
+    earthquakeMarkers.push(
+        marker
+    );
+
+}
+
+
+/* =====================================================
+   TARJETAS
+===================================================== */
+
+function createEventCard(
+    earthquake
+){
+
+    const properties=
+        earthquake.properties;
+
+
+    const coords=
+        earthquake.geometry.coordinates;
+
+
+    const magnitude=
+        properties.mag;
+
+
+    const card=
+        document.createElement("div");
+
+
+    card.className="event";
+
+
+    card.innerHTML=`
+
+        <div class="eventHeader">
+
+            <div
+                class="eventMagnitude"
+                style="
+                    color:${getMagnitudeColor(
+                        magnitude
+                    )}
+                ">
+
+                M${magnitude.toFixed(1)}
+
+            </div>
+
+
+            <div
+                style="
+                    font-size:9px;
+                    color:#5d7a90;
+                ">
+
+                ${formatTime(
+                    properties.time
+                )}
+
+            </div>
+
+        </div>
+
+
+        <div class="eventPlace">
+
+            ${properties.place ||
+              "Ubicación desconocida"}
+
+        </div>
+
+
+        <div class="eventTime">
+
+            📍 ${coords[1].toFixed(4)},
+            ${coords[0].toFixed(4)}
+
+        </div>
+
+    `;
+
+
+    card.onclick=()=>{
+
+        map.panTo({
+
+            lat:coords[1],
+
+            lng:coords[0]
+
+        });
+
+
+        map.setZoom(13);
+
+    };
+
+
+    document
+        .getElementById("events")
+        .appendChild(card);
+
+}
+
+
+/* =====================================================
+   ALERTA SÍSMICA
+===================================================== */
+
+function evaluateEarthquakeAlert(
+    earthquakes
+){
+
+    const BOGOTA_RADIUS=300;
+
+
+    const nearby=
+        earthquakes.filter(
+            earthquake=>{
+
+                const coords=
+                    earthquake.geometry
+                    .coordinates;
+
+
+                const distance=
+                    calculateDistance(
+
+                        BOGOTA.lat,
+
+                        BOGOTA.lng,
+
+                        coords[1],
+
+                        coords[0]
+
+                    );
+
+
+                return distance<=
+                    BOGOTA_RADIUS;
+
+            }
+        );
+
+
+    if(nearby.length===0){
+
+        setNormalState();
+
+        return;
+
+    }
+
+
+    nearby.sort(
+        (a,b)=>
+            b.properties.mag-
+            a.properties.mag
+    );
+
+
+    const strongest=nearby[0];
+
+    const magnitude=
+        strongest.properties.mag;
+
+    const coords=
+        strongest.geometry.coordinates;
+
+
+    const isNew=
+        !lastEarthquakeIds.has(
+            strongest.id
+        );
+
+
+    if(magnitude>=5.5){
+
+        triggerAlert({
+
+            level:"red",
+
+            type:"Sismo",
+
+            magnitude:magnitude,
+
+            lat:coords[1],
+
+            lng:coords[0],
+
+            depth:coords[2],
+
+            place:
+                strongest.properties.place,
+
+            isNew:isNew
+
+        });
+
+    }
+
+    else if(magnitude>=4.0){
+
+        triggerAlert({
+
+            level:"yellow",
+
+            type:"Actividad sísmica",
+
+            magnitude:magnitude,
+
+            lat:coords[1],
+
+            lng:coords[0],
+
+            depth:coords[2],
+
+            place:
+                strongest.properties.place,
+
+            isNew:isNew
+
+        });
+
+    }
+
+    else{
+
+        setNormalState();
+
+    }
+
+
+    nearby.forEach(
+        earthquake=>
+            lastEarthquakeIds.add(
+                earthquake.id
+            )
+    );
+
+}
+
+
+/* =====================================================
+   ALERTA
+===================================================== */
+
+function triggerAlert(data){
+
+    const mainAlert=
+        document.getElementById(
+            "mainAlert"
+        );
+
+
+    const icon=
+        document.getElementById(
+            "alertIcon"
+        );
+
+
+    const title=
+        document.getElementById(
+            "alertTitle"
+        );
+
+
+    const message=
+        document.getElementById(
+            "alertMessage"
+        );
+
+
+    const isDanger=
+        data.level==="red";
+
+
+    mainAlert.className=
+        isDanger
+        ? "mainAlert danger"
+        : "mainAlert warning";
+
+
+    icon.textContent=
+        isDanger
+        ? "🚨"
+        : "⚠️";
+
+
+    title.textContent=
+        isDanger
+        ? "ALERTA SÍSMICA"
+        : "Actividad sísmica";
+
+
+    message.innerHTML=`
+
+        Se detectó un evento de
+        <b>magnitud ${data.magnitude.toFixed(1)}</b>.
+
+        <br>
+
+        ${data.place}
+
+    `;
+
+
+    document.getElementById(
+        "dataType"
+    ).textContent=data.type;
+
+
+    document.getElementById(
+        "dataLevel"
+    ).textContent=
+        isDanger
+        ? "ALTO"
+        : "MODERADO";
+
+
+    document.getElementById(
+        "dataMagnitude"
+    ).textContent=
+        data.magnitude.toFixed(1);
+
+
+    document.getElementById(
+        "dataLat"
+    ).textContent=
+        data.lat.toFixed(5);
+
+
+    document.getElementById(
+        "dataLng"
+    ).textContent=
+        data.lng.toFixed(5);
+
+
+    document.getElementById(
+        "dataDepth"
+    ).textContent=
+        data.depth.toFixed(1)+" km";
+
+
+    drawAlertOnMap(data);
+
+
+    if(
+        data.isNew &&
+        soundEnabled
+    ){
+
+        playAlertSound(
+            data.level
+        );
+
+        vibrateDevice();
+
+    }
+
+}
+
+
+/* =====================================================
+   DIBUJAR ALERTA
+===================================================== */
+
+function drawAlertOnMap(data){
+
+    clearAlertMap();
+
+
+    const position={
+
+        lat:data.lat,
+
+        lng:data.lng
+
+    };
+
+
+    const markerElement=
+        document.createElement("div");
+
+
+    markerElement.style.width="34px";
+
+    markerElement.style.height="34px";
+
+    markerElement.style.borderRadius="50%";
+
+
+    markerElement.style.background=
+        data.level==="red"
+        ? "#ff3151"
+        : "#ffd21c";
+
+
+    markerElement.style.border=
+        "4px solid white";
+
+
+    markerElement.style.boxShadow=
+        data.level==="red"
+        ? "0 0 30px #ff3151"
+        : "0 0 30px #ffd21c";
+
+
+    markerElement.style.animation=
+        "dangerPulse 1s infinite alternate";
+
+
+    alertMarker=
+        new AdvancedMarkerElement({
+
+            map:map,
+
+            position:position,
+
+            content:markerElement,
+
+            title:"ALERTA"
+
+        });
+
+
+    alertCircle=
+        new google.maps.Circle({
+
+            map:map,
+
+            center:position,
+
+            radius:
+                data.level==="red"
+                ? 80000
+                : 40000,
+
+            fillColor:
+                data.level==="red"
+                ? "#ff3151"
+                : "#ffd21c",
+
+            fillOpacity:.15,
+
+            strokeColor:
+                data.level==="red"
+                ? "#ff3151"
+                : "#ffd21c",
+
+            strokeOpacity:.9,
+
+            strokeWeight:2
+
+        });
+
+
+    map.panTo(position);
+
+    map.setZoom(9);
+
+
+    showMapAlert(
+
+        data.level==="red"
+        ? "🚨 ALERTA DE EMERGENCIA"
+        : "⚠️ ALERTA PREVENTIVA",
+
+        `
+        <b>Magnitud:</b>
+        ${data.magnitude.toFixed(1)}
+        <br>
+
+        <b>Coordenadas:</b>
+        ${data.lat.toFixed(5)},
+        ${data.lng.toFixed(5)}
+        <br>
+
+        <b>Ubicación:</b>
+        ${data.place}
+        `
+
+    );
+
+}
+
+
+/* =====================================================
+   MAP ALERT
+===================================================== */
+
+function showMapAlert(
+    title,
+    text
+){
+
+    const box=
+        document.getElementById(
+            "mapAlert"
+        );
+
+
+    document.getElementById(
+        "mapAlertTitle"
+    ).innerHTML=title;
+
+
+    document.getElementById(
+        "mapAlertText"
+    ).innerHTML=text;
+
+
+    box.classList.add("show");
+
+}
+
+
+/* =====================================================
+   ESTADO NORMAL
+===================================================== */
+
+function setNormalState(){
+
+    const alert=
+        document.getElementById(
+            "mainAlert"
+        );
+
+
+    alert.className="mainAlert";
+
+
+    document.getElementById(
+        "alertIcon"
+    ).textContent="🟢";
+
+
+    document.getElementById(
+        "alertTitle"
+    ).textContent=
+        "Sistema normal";
+
+
+    document.getElementById(
+        "alertMessage"
+    ).textContent=
+        "No hay alertas sísmicas significativas cerca de Bogotá.";
+
+}
+
+
+/* =====================================================
+   LIMPIAR
+===================================================== */
+
+function clearAlertMap(){
+
+    if(alertMarker){
+
+        alertMarker.map=null;
+
+        alertMarker=null;
+
+    }
+
+
+    if(alertCircle){
+
+        alertCircle.setMap(null);
+
+        alertCircle=null;
+
+    }
+
+}
+
+
+function clearEarthquakeMarkers(){
+
+    earthquakeMarkers
+        .forEach(marker=>{
+
+            marker.map=null;
+
+        });
+
+
+    earthquakeMarkers=[];
+
+}
+
+
+function clearAlerts(){
+
+    clearAlertMap();
+
+
+    document.getElementById(
+        "mapAlert"
+    ).classList.remove("show");
+
+
+    setNormalState();
+
+
+    document.getElementById(
+        "dataType"
+    ).textContent="--";
+
+
+    document.getElementById(
+        "dataLevel"
+    ).textContent="--";
+
+
+    document.getElementById(
+        "dataMagnitude"
+    ).textContent="--";
+
+
+    document.getElementById(
+        "dataLat"
+    ).textContent="--";
+
+
+    document.getElementById(
+        "dataLng"
+    ).textContent="--";
+
+
+    document.getElementById(
+        "dataDepth"
+    ).textContent="--";
+
+}
+
+
+/* =====================================================
+   GEOLOCALIZACIÓN
+===================================================== */
+
+function getUserLocation(){
+
+    if(!navigator.geolocation){
+
+        alert(
+            "Tu navegador no soporta geolocalización."
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        position=>{
+
+            const lat=
+                position.coords.latitude;
+
+            const lng=
+                position.coords.longitude;
+
+            const accuracy=
+                position.coords.accuracy;
+
+
+            document.getElementById(
+                "userLat"
+            ).textContent=
+                lat.toFixed(5);
+
+
+            document.getElementById(
+                "userLng"
+            ).textContent=
+                lng.toFixed(5);
+
+
+            document.getElementById(
+                "userAccuracy"
+            ).textContent=
+                Math.round(accuracy)+" m";
+
+
+            const location={
+
+                lat:lat,
+
+                lng:lng
+
+            };
+
+
+            if(userMarker){
+
+                userMarker.map=null;
+
+            }
+
+
+            if(userCircle){
+
+                userCircle.setMap(null);
+
+            }
+
+
+            const element=
+                document.createElement("div");
+
+
+            element.style.width="18px";
+
+            element.style.height="18px";
+
+            element.style.borderRadius="50%";
+
+            element.style.background="#168cff";
+
+            element.style.border=
+                "3px solid white";
+
+            element.style.boxShadow=
+                "0 0 20px #168cff";
+
+
+            userMarker=
+                new AdvancedMarkerElement({
+
+                    map:map,
+
+                    position:location,
+
+                    content:element,
+
+                    title:"Tu ubicación"
+
+                });
+
+
+            userCircle=
+                new google.maps.Circle({
+
+                    map:map,
+
+                    center:location,
+
+                    radius:accuracy,
+
+                    fillColor:"#168cff",
+
+                    fillOpacity:.12,
+
+                    strokeColor:"#168cff",
+
+                    strokeOpacity:.5,
+
+                    strokeWeight:1
+
+                });
+
+
+            map.panTo(location);
+
+            map.setZoom(13);
+
+        },
+
+        error=>{
+
+            console.error(error);
+
+
+            alert(
+                "No fue posible obtener tu ubicación. "+
+                "Debes permitir el acceso a la ubicación."
+            );
+
+        },
+
+        {
+
+            enableHighAccuracy:true,
+
+            timeout:10000,
+
+            maximumAge:30000
+
+        }
+
+    );
+
+}
+
+
+/* =====================================================
+   DISTANCIA
+===================================================== */
+
+function calculateDistance(
+
+    lat1,
+    lon1,
+    lat2,
+    lon2
+
+){
+
+    const R=6371;
+
+
+    const dLat=
+        toRadians(lat2-lat1);
+
+
+    const dLon=
+        toRadians(lon2-lon1);
+
+
+    const a=
+
+        Math.sin(dLat/2)**2
+
+        +
+
+        Math.cos(
+            toRadians(lat1)
+        )
+
+        *
+
+        Math.cos(
+            toRadians(lat2)
+        )
+
+        *
+
+        Math.sin(dLon/2)**2;
+
+
+    const c=
+
+        2*
+
+        Math.atan2(
+
+            Math.sqrt(a),
+
+            Math.sqrt(1-a)
+
+        );
+
+
+    return R*c;
+
+}
+
+
+function toRadians(degrees){
+
+    return degrees*
+        Math.PI/
+        180;
+
+}
+
+
+/* =====================================================
+   COLORES
+===================================================== */
+
+function getMagnitudeColor(
+    magnitude
+){
+
+    if(magnitude<4){
+
+        return "#00f58a";
+
+    }
+
+
+    if(magnitude<5){
+
+        return "#ffd21c";
+
+    }
+
+
+    return "#ff3151";
+
+}
+
+
+/* =====================================================
+   HORA
+===================================================== */
+
+function formatTime(
+    timestamp
+){
+
+    return new Date(
+        timestamp
+    ).toLocaleTimeString(
+        "es-CO",
+        {
+
+            hour:"2-digit",
+
+            minute:"2-digit"
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SONIDO
+===================================================== */
+
+let audioContext;
+
+
+function playAlertSound(level){
+
+    try{
+
+        if(!audioContext){
+
+            audioContext=
+                new(
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+        }
+
+
+        const oscillator=
+            audioContext.createOscillator();
+
+
+        const gain=
+            audioContext.createGain();
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.type="sine";
+
+
+        const now=
+            audioContext.currentTime;
+
+
+        if(level==="red"){
+
+            oscillator.frequency
+                .setValueAtTime(
+                    880,
+                    now
+                );
+
+
+            oscillator.frequency
+                .setValueAtTime(
+                    440,
+                    now+.18
+                );
+
+
+            oscillator.frequency
+                .setValueAtTime(
+                    880,
+                    now+.36
+                );
+
+
+            gain.gain
+                .setValueAtTime(
+                    .0001,
+                    now
+                );
+
+
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    .45,
+                    now+.03
+                );
+
+
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    .0001,
+                    now+.55
+                );
+
+
+            oscillator.start(now);
+
+            oscillator.stop(now+.6);
+
+        }
+
+        else{
+
+            oscillator.frequency
+                .setValueAtTime(
+                    620,
+                    now
+                );
+
+
+            oscillator.frequency
+                .setValueAtTime(
+                    820,
+                    now+.25
+                );
+
+
+            gain.gain
+                .setValueAtTime(
+                    .0001,
+                    now
+                );
+
+
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    .35,
+                    now+.03
+                );
+
+
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    .0001,
+                    now+.5
+                );
+
+
+            oscillator.start(now);
+
+            oscillator.stop(now+.55);
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Audio:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   VIBRACIÓN
+===================================================== */
+
+function vibrateDevice(){
+
+    if("vibrate" in navigator){
+
+        navigator.vibrate([
+            300,
+            150,
+            300
+        ]);
+
+    }
+
+}
+
+
+/* =====================================================
+   SONIDO ON/OFF
+===================================================== */
+
+function toggleSound(){
+
+    soundEnabled=
+        !soundEnabled;
+
+
+    const button=
+        document.getElementById(
+            "soundButton"
+        );
+
+
+    button.textContent=
+        soundEnabled
+        ? "🔊"
+        : "🔇";
+
+
+    if(
+        soundEnabled &&
+        !audioContext
+    ){
+
+        audioContext=
+            new(
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+    }
+
+}
+
+
+/* =====================================================
+   SIMULADOR
+===================================================== */
+
+function simulateAlert(level){
+
+    const simulatedData={
+
+        level:level,
+
+        type:"Sismo simulado",
+
+        magnitude:
+            level==="red"
+            ? 6.1
+            : 4.5,
+
+        lat:4.82,
+
+        lng:-73.92,
+
+        depth:18.4,
+
+        place:
+            "Evento simulado — Bogotá",
+
+        isNew:true
+
+    };
+
+
+    triggerAlert(
+        simulatedData
+    );
+
+}
+
+</script>
+
+
+<!-- =====================================================
+     GOOGLE MAPS
+===================================================== -->
+
+<script
+async
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANlwwU91oZR6p4N_wOhaHm4J1Kn69qTKw&loading=async&libraries=marker&callback=initMap">
+</script>
+
+
+</body>
+
+</html>
